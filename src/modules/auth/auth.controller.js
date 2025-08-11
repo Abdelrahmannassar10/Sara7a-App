@@ -9,6 +9,6 @@ router.post("/login", authRouter.login);
 router.post("/verify-account", authRouter.verifyAccount);
 router.post("/resendOTP", authRouter.resendOtp);
 router.post("/google-login", authRouter.loginWithGoogle);
-router.post("/refresh-token", isAuthenticated, authRouter.refreshToken);
-router.post("/logout", isAuthenticated, authRouter.updatePassword);
+router.post("/refresh-token", isAuthenticated, authRouter.refresh_Token);
+router.post("/update-password", isAuthenticated, authRouter.updatePassword);
 export default router;

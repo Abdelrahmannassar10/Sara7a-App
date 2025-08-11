@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { sendEmail } from "../../utilies/email/index.js";
 import { generateOTP } from "../../utilies/otp/index.js";
 import { OAuth2Client } from "google-auth-library";
-import { generateToken } from "../../utilies/token/index.js";
+import { generateToken ,refreshToken } from "../../utilies/token/index.js";
 export const register = async (req, res, next) => {
     //extract data from body
     const { fullName, email, password, phoneNumber, dob } = req.body;
@@ -122,7 +122,7 @@ export const login = async (req, res, next) => {
     //send response
     return res.status(200).json({ message: "user login successfully ", success: true, token: token });
 };
-export const refreshToken = async (req, res, next) => {
+export const refresh_Token = async (req, res, next) => {
     const newToken = refreshToken(req.user);
     return res.status(200).json({ message: "Token refreshed successfully", success: true, token: newToken });
 };
