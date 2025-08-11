@@ -1,0 +1,8 @@
+import mongoose from "mongoose";
+export const connectDB = async () => {
+    mongoose.connect("mongodb://localhost:27017/saraha-App").then(() => {
+        console.log("Connected to MongoDB");
+    }).catch((err) => {
+        console.error("Error connecting to MongoDB:", err);
+    });
+}
