@@ -1,4 +1,5 @@
 import { User } from "../../DB/models/user.model.js";
+import { Token } from "../../DB/models/token.model.js"
 import { sendEmail } from "../../utilies/email/index.js";
 import { generateOTP } from "../../utilies/otp/index.js";
 import { OAuth2Client } from "google-auth-library";
@@ -118,9 +119,17 @@ export const login = async (req, res, next) => {
         throw Error("invalid credential !!!!!!", { cause: 400 });
     }
     //generate token
-    const token = generateToken(userExist, "15m");
+    const accessToken =generateToken({
+        payload:{id:userExist._id} ,
+        options:{expiresIn : "5s"}
+    });
+    const refreshToken = generateToken({
+        payload:{id:userExist._id},
+        options:{expiresIn : "15m"}
+    })
+    await Token.create({token:refreshToken ,user:userExist._id ,type:"refresh"});
     //send response
-    return res.status(200).json({ message: "user login successfully ", success: true, token: token });
+    return res.status(200).json({ message: "user login successfully ", success: true, data:{accessToken ,refreshToken} });
 };
 export const refresh_Token = async (req, res, next) => {
     const newToken = refreshToken(req.user);
@@ -153,7 +162,12 @@ export const resetPassword = async (req, res, next) => {
     }
     userExist.password = hashPassword(newPassword);
     userExist.otp = undefined;
-    userExist.otpExpire=undefined;
+    userExist.otpExpire = undefined;
     await userExist.save();
     return res.status(200).json({ message: "Password reset successfully", success: true });
+};
+export const logout = async (req, res, next) => {
+    const token = req.headers.authorization;
+    await Token.create({ token, user: req.user.id });
+    return res.status(200).json({ message: "User logout successfully", success: true });
 }

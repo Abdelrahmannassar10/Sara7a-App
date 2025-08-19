@@ -4,17 +4,19 @@ import jwt from "jsonwebtoken";
  * @param {string} time - The expiration time for the token (e.g., "15m", "1h").
  * @returns {string} - The generated JWT token.
  */
-export const generateToken =(user,time)=>{
- const token = jwt.sign({id:user._id,name:user.fullName ,email:user.email},"this-is-token-for-sara7a-App",{expiresIn:time});
+export const generateToken =({payload,secretKey="this-is-token-for-sara7a-App",options ={expiresIn : "15m"}})=>{
+ const token = jwt.sign(payload,secretKey,options);
     return token ;
 };
-export const verifyToken = (token) => {
-    try {
-        const payload = jwt.verify(token, "this-is-token-for-sara7a-App");
-        return payload;
-    } catch (error) {
-        throw Error("Invalid token", { cause: 401 });
+export const verifyToken = (token, secretKey="this-is-token-for-sara7a-App") => {
+  try {
+    return jwt.verify(token, secretKey);
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      throw Error("Token expired", { cause: 401 });
     }
+    throw Error("Invalid token", { cause: 401 });
+  }
 };
 export const refreshToken = (user) => {
     const token = jwt.sign({ id: user._id,name:user.fullName ,email:user.email }, "this-is-token-for-sara7a-App", { expiresIn: "7d" });

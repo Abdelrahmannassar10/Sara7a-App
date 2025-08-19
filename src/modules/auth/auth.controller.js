@@ -12,4 +12,5 @@ router.post("/google-login", authRouter.loginWithGoogle);
 router.post("/refresh-token", isAuthenticated, authRouter.refresh_Token);
 router.post("/update-password", isAuthenticated, authRouter.updatePassword);
 router.patch("/resetPassword" ,isValid(resetPasswordSchema) ,authRouter.resetPassword);
+router.get("/logout", isAuthenticated, authRouter.logout);
 export default router;
