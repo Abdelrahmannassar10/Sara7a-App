@@ -59,7 +59,8 @@ const schema = new Schema({
         default:"local"
     } ,
     profilePicture:{
-        type:String,
+        secure_url:String,
+        public_id:String
     }
 },{timestamps:true,toObject:{virtuals:true},toJSON:{virtuals:true}});
 schema.virtual("age").get(function (){

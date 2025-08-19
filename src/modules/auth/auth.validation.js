@@ -1,8 +1,19 @@
 import joi from "joi";
-export const registerSchema =joi.object({
-            fullName: joi.string().required(),
-            email: joi.string().email(),
-            password: joi.string().min(6).required(),
-            phoneNumber: joi.string(),
-            dob: joi.date().less('now')
-        }).or('email', 'phoneNumber');
+import { generalFields } from "../../middleware/validation.middleware.js";
+export const registerSchema = joi.object({
+    fullName: joi.string().required(),
+    email: generalFields.email.required(),
+    password: generalFields.password.required(),
+    phoneNumber: generalFields.phoneNumber.required(),
+    dob: generalFields.dob.required()
+}).or('email', 'phoneNumber');
+export const loginSchema = joi.object({
+    email: generalFields.email.required(),
+    password: generalFields.password.required()
+});
+export const resetPasswordSchema = joi.object({
+    email: generalFields.email.required(),
+    otp: generalFields.otp.required(),
+    newPassword: generalFields.password.required(),
+    repassword: generalFields.repassword("newPassword").required()
+});

@@ -1,14 +1,15 @@
 import { Router } from "express";
 import * as authRouter from "./auth.service.js";
 import { isValid } from "../../middleware/validation.middleware.js";
-import { registerSchema } from "./auth.validation.js";
+import { registerSchema  ,resetPasswordSchema} from "./auth.validation.js";
 import { isAuthenticated } from "../../middleware/auth.middleware.js";
 const router = Router();
-router.post("/register",  isAuthenticated,isValid(registerSchema), authRouter.register);
+router.post("/register",isValid(registerSchema), authRouter.register);
 router.post("/login", authRouter.login);
 router.post("/verify-account", authRouter.verifyAccount);
-router.post("/resendOTP", authRouter.resendOtp);
+router.post("/sendOTP", authRouter.sendOtp);
 router.post("/google-login", authRouter.loginWithGoogle);
 router.post("/refresh-token", isAuthenticated, authRouter.refresh_Token);
 router.post("/update-password", isAuthenticated, authRouter.updatePassword);
+router.patch("/resetPassword" ,isValid(resetPasswordSchema) ,authRouter.resetPassword);
 export default router;
