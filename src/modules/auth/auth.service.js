@@ -61,7 +61,7 @@ export const verifyAccount = async (req, res, next) => {
 };
 export const sendOtp = async (req, res, next) => {
     const { email } = req.body;
-    const { otp, otpExpire } = generateOTP();
+    const { otp, otpExpire } = generateOTP({expiredTime:2*60*1000});
     await User.findOneAndUpdate({ email }, { otp, otpExpire });
     await sendEmail({
         to: email, subject: " your OTP ", html: `Your OTP is: ${otp}`
