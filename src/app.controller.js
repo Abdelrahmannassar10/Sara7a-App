@@ -8,6 +8,12 @@ export  function bootstrap  (express, app) {
     const limiter = rateLimit({
         windowMs: 5*60*1000 ,
         limit:5,
+        handler:(req,res,next,options) => {
+            res.status(options.statusCode).json({ message: options.message, success: false });
+        },
+        identifier:(req,res) => {
+            return req.ip;
+        }
     })
     app.use(express.json());
     connectDB();

@@ -34,7 +34,7 @@ export const register = async (req, res, next) => {
     //send verification email to the user
     //create the user in the system   
     const user = new User({ fullName, email, phoneNumber, password: hashPassword(password), dob });
-    const { otp, otpExpire } = generateOTP();
+    const { otp, otpExpire } = generateOTP({ expiredTime: 15 * 60 * 1000 });
     user.otp = otp;
     user.otpExpire = otpExpire;
     if (email) {
@@ -125,7 +125,7 @@ export const login = async (req, res, next) => {
     });
     const refreshToken = generateToken({
         payload:{id:userExist._id},
-        options:{expiresIn : "15m"}
+        options:{expiresIn : "7d"}
     })
     await Token.create({token:refreshToken ,user:userExist._id ,type:"refresh"});
     //send response
@@ -163,7 +163,11 @@ export const resetPassword = async (req, res, next) => {
     userExist.password = hashPassword(newPassword);
     userExist.otp = undefined;
     userExist.otpExpire = undefined;
+    userExist.credentialUpdatedAt = Date.now();
+    userExist.otp = undefined;
+    userExist.otpExpire = undefined;
     await userExist.save();
+    await Token.deleteMany({ user: userExist._id, type: "refresh" });
     return res.status(200).json({ message: "Password reset successfully", success: true });
 };
 export const logout = async (req, res, next) => {

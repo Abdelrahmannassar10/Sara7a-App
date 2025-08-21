@@ -44,7 +44,7 @@ const schema = new Schema({
         type:Date,
     },
     otp:{
-        type:Number,
+        type:String,
     },
     otpExpire:{
         type:Date,
@@ -61,6 +61,10 @@ const schema = new Schema({
     profilePicture:{
         secure_url:String,
         public_id:String
+    },
+    credentialUpdatedAt:{
+        type:Date,
+        default:Date.now()
     }
 },{timestamps:true,toObject:{virtuals:true},toJSON:{virtuals:true}});
 schema.virtual("age").get(function (){

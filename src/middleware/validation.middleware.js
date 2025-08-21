@@ -1,7 +1,8 @@
-import joi from "joi";
+import joi, { object } from "joi";
 export const isValid= (schema)=> {
     return (req, res, next) => {
-        const { value, error } = schema.validate(req.body, {
+        const data = {...req.body, ...req.params, ...req.query};
+        const { value, error } = schema.validate(data, {
             abortEarly: false
         });
         if (error) {
@@ -18,5 +19,6 @@ phoneNumber:joi.string().min(10).max(15),
 dob:joi.date(),
 name:joi.string().min(3).max(30),
 otp:joi.string().length(5) ,
-repassword :(ref)=> joi.string().valid(joi.ref(ref))
+repassword :(ref)=> joi.string().valid(joi.ref(ref)) ,
+objectId: joi.string().hex().length(24),
 }

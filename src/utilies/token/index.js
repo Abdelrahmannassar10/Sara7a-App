@@ -9,14 +9,7 @@ export const generateToken =({payload,secretKey="this-is-token-for-sara7a-App",o
     return token ;
 };
 export const verifyToken = (token, secretKey="this-is-token-for-sara7a-App") => {
-  try {
     return jwt.verify(token, secretKey);
-  } catch (error) {
-    if (error.name === "TokenExpiredError") {
-      throw Error("Token expired", { cause: 401 });
-    }
-    throw Error("Invalid token", { cause: 401 });
-  }
 };
 export const refreshToken = (user) => {
     const token = jwt.sign({ id: user._id,name:user.fullName ,email:user.email }, "this-is-token-for-sara7a-App", { expiresIn: "7d" });
