@@ -5,6 +5,7 @@ import { verifyToken } from "../utilies/token/index.js";
 
 export const isAuthenticated = async (req, res, next) => {
     const token = req.headers.authorization;
+    // console.log(token);
     if (!token) {
         return res.status(401).json({ message: "token is required " });
     }
@@ -12,7 +13,8 @@ export const isAuthenticated = async (req, res, next) => {
     if (blockedToken) {
         throw Error("invalid Token (blocked)", { cause: 409 });
     };
-    const payload = verifyToken(token);
+
+    const payload =verifyToken({token, secretKey: process.env.SECRET_KEY});
 
     if (!payload) {
         return res.status(401).json({ message: "Invalid token (payload not found)" });

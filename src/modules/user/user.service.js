@@ -1,11 +1,10 @@
+import { Token } from "../../DB/models/token.model.js";
 import { User } from "../../DB/models/user.model.js"
 import cloudinary, { deleteFile } from "../../utilies/cloud/cloudinary.config.js";
 import fs from "fs";
 export const deleteUser = async (req, res, next) => {
-    if(req.user.profilePicture.public_id) {
-        deleteFile(`saraha_App/users/${req.user._id}`);
-    }
-    await User.deleteOne({ _id: req.user._id });
+    await User.findByIdAndUpdate(req.params.id, { deletedAt: new Date() ,credentialUpdatedAt: new Date() });
+    await Token.deleteMany({ user: req.params.id });
     return res.status(200).json({ message: "user deleted successfully", success: true });
 };
 export const uploadProfilePicture = async (req, res, next) => {

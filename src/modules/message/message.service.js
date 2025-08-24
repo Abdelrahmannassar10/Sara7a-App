@@ -5,13 +5,16 @@ export const createMessage = async (req, res) => {
     const {receiver} = req.params;
     const {files} = req;
     //upload files to cloud storage
-    const attachments = await uploadfiles(files, {
+    console.log(files);
+
+    const attachment = await uploadfiles(files, {
         folder: `saraha-App/users/${receiver}/messages`
     });
     await Message.create({
         content,
         receiver,
-        attachments
+        attachment,
+        sender: req.user?._id
     });
     res.status(201).json({ message: "Message created successfully" });
 };

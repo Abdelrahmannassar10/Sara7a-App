@@ -65,6 +65,9 @@ const schema = new Schema({
     credentialUpdatedAt:{
         type:Date,
         default:Date.now()
+    },
+    deletedAt:{
+        type:Date,
     }
 },{timestamps:true,toObject:{virtuals:true},toJSON:{virtuals:true}});
 schema.virtual("age").get(function (){

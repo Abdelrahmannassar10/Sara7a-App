@@ -19,7 +19,7 @@ export  function bootstrap  (express, app) {
     connectDB();
     app.use("/auth", authRouter);
     app.use("/user", userRouter);
-    app.use("/messages", messageRouter);
+    app.use("/message", messageRouter);
     app.use("/uploads", express.static("uploads"));
     app.use(globalErrorHandler);
 }

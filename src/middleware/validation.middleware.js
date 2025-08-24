@@ -1,4 +1,4 @@
-import joi, { object } from "joi";
+import Joi from "joi";
 export const isValid= (schema)=> {
     return (req, res, next) => {
         const data = {...req.body, ...req.params, ...req.query};
@@ -13,12 +13,12 @@ export const isValid= (schema)=> {
     };
 };
 export const generalFields={
-email:joi.string().email({tlds:{allow: ["com"]}}) ,
-password:joi.string().min(5).max(100),
-phoneNumber:joi.string().min(10).max(15),
-dob:joi.date(),
-name:joi.string().min(3).max(30),
-otp:joi.string().length(5) ,
-repassword :(ref)=> joi.string().valid(joi.ref(ref)) ,
-objectId: joi.string().hex().length(24),
+email:Joi.string().email({tlds:{allow: ["com"]}}) ,
+password:Joi.string().min(5).max(100),
+phoneNumber:Joi.string().min(10).max(15),
+dob:Joi.date(),
+name:Joi.string().min(3).max(30),
+otp:Joi.string().length(5) ,
+repassword :(ref)=> Joi.string().valid(Joi.ref(ref)) ,
+objectId: Joi.string().hex().length(24),
 }

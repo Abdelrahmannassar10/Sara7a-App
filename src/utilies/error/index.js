@@ -17,7 +17,7 @@ export const globalErrorHandler = async (err, req, res, next) => {
     //     fs.unlinkSync(req.file.path);
     // }
     try {
-        if (err.message == "jwt expired") {
+        if ( err.message == "jwt expired") {
             const refreshToken = req.headers.refreshtoken;
             const payload = verifyToken(refreshToken);
             const tokenExist = await Token.findOneAndDelete({ token: refreshToken, user: payload.id, type: "refresh" });

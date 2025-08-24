@@ -1,4 +1,4 @@
-import { Schema  ,model} from "mongoose";
+import { Schema, model } from "mongoose";
 
 const schema = new Schema({
     receiver: {
@@ -14,17 +14,18 @@ const schema = new Schema({
         type: String,
         minlength: 3,
         maxlength: 1000,
-        required:() =>{
-            if(this.attachment.length > 0){
-                return true;
-            }
-            return false;   
+        required: function () {
+            return !(Array.isArray(this.attachment) && this.attachment.length > 0);
         }
-    },
-    attachment: [{
-        secure_url: String,
-        public_id: String
-    }],
+    }, attachment: {
+        type: [{
+            secure_url: String,
+            public_id: String
+        }],
+        default: []
+    }
+
+
 }, { timestamps: true })
 const Message = model("Message", schema);
 export default Message;

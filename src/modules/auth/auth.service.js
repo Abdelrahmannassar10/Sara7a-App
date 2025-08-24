@@ -61,7 +61,7 @@ export const verifyAccount = async (req, res, next) => {
 };
 export const sendOtp = async (req, res, next) => {
     const { email } = req.body;
-    const { otp, otpExpire } = generateOTP({expiredTime:2*60*1000});
+    const { otp, otpExpire } = generateOTP({ expiredTime: 2 * 60 * 1000 });
     await User.findOneAndUpdate({ email }, { otp, otpExpire });
     await sendEmail({
         to: email, subject: " your OTP ", html: `Your OTP is: ${otp}`
@@ -113,23 +113,27 @@ export const login = async (req, res, next) => {
     if (userExist.isVerified === false) {
         throw Error("User is not verified", { cause: 401 });
     }
+    if(userExist.deletedAt) {
+        userExist.deletedAt = undefined;
+        await userExist.save();
+    }
     //compare passwords
     const match = comparePassword(password, userExist.password);
     if (!match) {
         throw Error("invalid credential !!!!!!", { cause: 400 });
     }
     //generate token
-    const accessToken =generateToken({
-        payload:{id:userExist._id} ,
-        options:{expiresIn : "5s"}
+    const accessToken = generateToken({
+        payload: { id: userExist._id, email: userExist.email } ,
+        options: { expiresIn: "5s" }
     });
     const refreshToken = generateToken({
-        payload:{id:userExist._id},
-        options:{expiresIn : "7d"}
+        payload: { id: userExist._id },
+        options: { expiresIn: "7d" }
     })
-    await Token.create({token:refreshToken ,user:userExist._id ,type:"refresh"});
+    await Token.create({ token: refreshToken, user: userExist._id, type: "refresh" });
     //send response
-    return res.status(200).json({ message: "user login successfully ", success: true, data:{accessToken ,refreshToken} });
+    return res.status(200).json({ message: "user login successfully ", success: true, data: { accessToken, refreshToken } });
 };
 export const refresh_Token = async (req, res, next) => {
     const newToken = refreshToken(req.user);
@@ -139,7 +143,7 @@ export const updatePassword = async (req, res, next) => {
     const { oldPassword, newPassword } = req.body;
     const user = req.user;
     //compare old password
-    const match = bcrypt.compareSync(oldPassword, user.password);
+    const match = comparePassword(oldPassword, user.password);
     if (!match) {
         throw Error("Invalid old password", { cause: 400 });
     }
