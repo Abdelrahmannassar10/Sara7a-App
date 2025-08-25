@@ -80,5 +80,10 @@ schema.virtual("fullName").set(function (value){
  const [firstName ,lastName] =value.split(" ");
  this.firstName =firstName ;
  this.lastName =lastName ;
-})
+});
+schema.virtual("messages",{
+    ref:"Message",
+    localField:"_id",
+    foreignField:"receiver"
+});
 export const User = model("User",schema);

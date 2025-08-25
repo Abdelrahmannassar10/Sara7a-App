@@ -1,11 +1,10 @@
-import { log } from "console";
 import { Token } from "../DB/models/token.model.js";
 import { User } from "../DB/models/user.model.js";
 import { verifyToken } from "../utilies/token/index.js";
 
 export const isAuthenticated = async (req, res, next) => {
     const token = req.headers.authorization;
-    // console.log(token);
+    console.log(token);
     if (!token) {
         return res.status(401).json({ message: "token is required " });
     }
@@ -23,8 +22,6 @@ export const isAuthenticated = async (req, res, next) => {
     if (!userExist) {
         return res.status(404).json({ message: "User not found" });
     }
-    console.log(userExist.credentialUpdatedAt, new Date(payload.iat * 1000));
-
     if (userExist.credentialUpdatedAt > new Date(payload.iat * 1000)) {
         return res.status(401).json({ message: "Token expired (credential updated)" });
     }

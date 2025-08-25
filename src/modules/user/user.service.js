@@ -38,3 +38,11 @@ export const uploadProfilePictureCloud = async (req, res, next) => {
     });
 
 };
+export const getProfile =async(req,res,next)=>{
+    const profile = await User.findOne({_id:req.user._id},{},{populate:[{path:"messages"}]});
+    res.status(200).json({
+        message: "done",
+        success: true,
+        data: profile
+    });
+}

@@ -7,4 +7,5 @@ import { messageSchema } from "./message.validation.js";
 const router = Router();
 router.post("/:receiver", uploadfile().array("attachment", 3), isValid(messageSchema), MessageRouter.createMessage);
 router.post("/:receiver/sender",  uploadfile().array("attachment", 3),isAuthenticated, isValid(messageSchema), MessageRouter.createMessage);
+router.get("/:id", isAuthenticated, MessageRouter.getMessage);
 export default router;

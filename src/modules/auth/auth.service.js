@@ -125,15 +125,15 @@ export const login = async (req, res, next) => {
     //generate token
     const accessToken = generateToken({
         payload: { id: userExist._id, email: userExist.email } ,
-        options: { expiresIn: "5s" }
+        options: { expiresIn: "15m" }
     });
-    const refreshToken = generateToken({
+    const refreshtoken = generateToken({
         payload: { id: userExist._id },
         options: { expiresIn: "7d" }
     })
-    await Token.create({ token: refreshToken, user: userExist._id, type: "refresh" });
+    await Token.create({ token: refreshtoken, user: userExist._id, type: "refresh" });
     //send response
-    return res.status(200).json({ message: "user login successfully ", success: true, data: { accessToken, refreshToken } });
+    return res.status(200).json({ message: "user login successfully ", success: true, data: { accessToken, refreshtoken } });
 };
 export const refresh_Token = async (req, res, next) => {
     const newToken = refreshToken(req.user);

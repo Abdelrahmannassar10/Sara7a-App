@@ -18,3 +18,13 @@ export const createMessage = async (req, res) => {
     });
     res.status(201).json({ message: "Message created successfully" });
 };
+export const getMessage = async (req, res) => {
+    const {id} = req.params;
+    const messages = await Message.findOne({ _id: id  , receiver :req.user.id} ,{},{
+        populate: {
+            path: "receiver",
+            select: "-password -createdAt -updatedAt -deletedAt -__v -_id -credentialUpdatedAt -userAgent -isVerified -lastName  -firstName"
+        }
+    });
+    res.status(200).json(messages);
+};

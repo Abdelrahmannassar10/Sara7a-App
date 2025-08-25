@@ -19,22 +19,24 @@ export const globalErrorHandler = async (err, req, res, next) => {
     try {
         if ( err.message == "jwt expired") {
             const refreshToken = req.headers.refreshtoken;
-            const payload = verifyToken(refreshToken);
+            const payload = verifyToken({ token: refreshToken });
             const tokenExist = await Token.findOneAndDelete({ token: refreshToken, user: payload.id, type: "refresh" });
             if (!tokenExist) {
                 throw Error("invaled token (refresh token not found)", { cause: 409 });
             }
             const accessToken = generateToken({
                 payload: { id: payload.id },
-                options: { expiresIn: "5s" }
+                options: { expiresIn: "15m" }
             });
             const newRefreshToken = generateToken({
                 payload: { id: payload.id },
                 options: { expiresIn: "15m" }
             });
-            await Token.create({ token: newRefreshToken, user: payload.id, type: "refresh" });
+            const token =   await Token.create({ token: newRefreshToken, user: payload.id, type: "refresh" });
+            console.log(token);
+
             //send response
-            return res.status(200).json({ message: "refresh token successfully", success: true, data: { accessToken, refreshToken: newRefreshToken } });
+            return res.status(200).json({ message: " refresh token successfully", success: true, data: { accessToken, refreshtoken: newRefreshToken } });
         }
         res.status(err.cause || 500).json({ message: err.message, success: false, error: err.stack });
     } catch (error) {
